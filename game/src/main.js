@@ -54,6 +54,13 @@ if (staged) {
     missionState.ringsHit = 1;
     missionState.score = 250;
   }
+  // Re-apply dash progress for the dash shot after the fresh state.
+  if (params.get('shot') === 'dash') {
+    missionState.index = 0;
+    missionState.checkpointsHit = 0;
+    missionState.score = 150;
+    missionState.timeLeft = 132;
+  }
   cam.x = plane.x; cam.y = plane.y + 7; cam.z = plane.z + 26;
 }
 

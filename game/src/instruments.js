@@ -209,9 +209,16 @@ export function drawHud(ctx, w, h, plane, missionState, view, time, muted) {
     ctx.textAlign = 'center';
     ctx.fillText(missionState.message, w / 2, h * 0.20);
   }
-  // Controls hint, bottom centre.
-  ctx.fillStyle = 'rgba(238,242,245,0.85)';
+  // Controls hint, bottom centre, on its own dark scrim so the
+  // bright runway threshold can never wash the text out.
+  const hint = 'W/S pitch  •  A/D bank  •  SHIFT/CTRL throttle  •  C view  •  P pause  •  R restart  •  M sound';
   ctx.font = '12px system-ui, sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillText('W/S pitch  •  A/D bank  •  SHIFT/CTRL throttle  •  C view  •  P pause  •  R restart  •  M sound', w / 2, h - 8);
+  const hw = ctx.measureText(hint).width + 24;
+  ctx.fillStyle = 'rgba(10,14,20,0.72)';
+  ctx.beginPath();
+  ctx.roundRect(w / 2 - hw / 2, h - 24, hw, 20, 8);
+  ctx.fill();
+  ctx.fillStyle = 'rgba(238,242,245,0.9)';
+  ctx.fillText(hint, w / 2, h - 8);
 }

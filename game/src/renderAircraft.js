@@ -113,7 +113,7 @@ export function drawCockpitFrame(ctx, w, h, plane, time) {
   ctx.fillRect(nx - 38 * s, ny + 56 * s, 76 * s, 5 * s);
   // Propeller disc, centred on the nose tip: a wide, visible disc
   // with two blurred blades and a spinner hub.
-  const propR = 84 * s * (0.45 + plane.throttle * 0.55);
+  const propR = 62 * s * (0.45 + plane.throttle * 0.55);
   ctx.fillStyle = 'rgba(58,58,66,0.46)';
   ctx.beginPath();
   ctx.ellipse(nx, ny - 72 * s, propR, propR * 0.45, 0, 0, Math.PI * 2);
@@ -146,6 +146,16 @@ export function drawCockpitFrame(ctx, w, h, plane, time) {
   ctx.moveTo(w, 0); ctx.lineTo(w * 0.93, h * 0.20); ctx.lineTo(w * 0.885, h * 0.20); ctx.lineTo(w, h * 0.05);
   ctx.closePath(); ctx.fill();
   ctx.fillRect(0, 0, w, h * 0.04);
+  // Cream inner edge so each pillar reads as cockpit frame,
+  // not a stray dark triangle.
+  ctx.strokeStyle = 'rgba(245,241,230,0.35)';
+  ctx.lineWidth = 3 * s;
+  ctx.beginPath();
+  ctx.moveTo(w * 0.115, h * 0.20); ctx.lineTo(0, h * 0.05);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(w * 0.885, h * 0.20); ctx.lineTo(w, h * 0.05);
+  ctx.stroke();
   // Glareshield.
   const shield = ctx.createLinearGradient(0, h * 0.62, 0, h * 0.74);
   shield.addColorStop(0, '#2b2e34');
@@ -167,6 +177,83 @@ export function drawCockpitFrame(ctx, w, h, plane, time) {
   ctx.fillRect(0, h * 0.74, w, h * 0.26);
   ctx.fillStyle = 'rgba(255,255,255,0.14)';
   ctx.fillRect(0, h * 0.74, w, 2);
+  // Rivet dots along the panel top edge.
+  ctx.fillStyle = 'rgba(255,255,255,0.28)';
+  for (let rx = w * 0.04; rx < w * 0.97; rx += w * 0.06) {
+    if (Math.abs(rx - w * 0.5) < 60 * s) continue;
+    ctx.beginPath(); ctx.arc(rx, h * 0.758, 2.2 * s, 0, Math.PI * 2); ctx.fill();
+  }
+  // Two standby dials, left and right of the nose, in the clear
+  // gap between the two floating HUD panels.
+  for (const dx of [w * 0.40, w * 0.60]) {
+    const dy = h * 0.885;
+    const dr = 30 * s;
+    const face = ctx.createRadialGradient(dx - dr * 0.3, dy - dr * 0.3, dr * 0.1, dx, dy, dr);
+    face.addColorStop(0, '#2e3a44');
+    face.addColorStop(1, '#10161c');
+    ctx.fillStyle = face;
+    ctx.beginPath(); ctx.arc(dx, dy, dr, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = '#e8d9a0';
+    ctx.lineWidth = 2 * s;
+    ctx.beginPath(); ctx.arc(dx, dy, dr, 0, Math.PI * 2); ctx.stroke();
+    ctx.strokeStyle = 'rgba(232,217,160,0.8)';
+    ctx.lineWidth = 1.5 * s;
+    for (let i = 0; i <= 8; i++) {
+      const a = Math.PI * 0.75 + (i / 8) * Math.PI * 1.5;
+      ctx.beginPath();
+      ctx.moveTo(dx + Math.cos(a) * dr * 0.8, dy + Math.sin(a) * dr * 0.8);
+      ctx.lineTo(dx + Math.cos(a) * dr * 0.92, dy + Math.sin(a) * dr * 0.92);
+      ctx.stroke();
+    }
+    const na = Math.PI * 0.75 + 0.62 * Math.PI * 1.5;
+    ctx.strokeStyle = '#ffd34d';
+    ctx.lineWidth = 2.5 * s;
+    ctx.beginPath();
+    ctx.moveTo(dx - Math.cos(na) * dr * 0.15, dy - Math.sin(na) * dr * 0.15);
+    ctx.lineTo(dx + Math.cos(na) * dr * 0.72, dy + Math.sin(na) * dr * 0.72);
+    ctx.stroke();
+  }
+  // Centre compass strip, below the nose.
+  const stripX = w * 0.42;
+  const stripW = w * 0.16;
+  const stripY = h * 0.795;
+  ctx.fillStyle = '#10161c';
+  ctx.fillRect(stripX, stripY, stripW, 26 * s);
+  ctx.strokeStyle = 'rgba(232,217,160,0.6)';
+  ctx.lineWidth = 1.5 * s;
+  ctx.strokeRect(stripX, stripY, stripW, 26 * s);
+  ctx.fillStyle = '#eef2f5';
+  ctx.font = `bold ${Math.round(13 * s)}px system-ui, sans-serif`;
+  ctx.textAlign = 'center';
+  const marks = ['N', 'E', 'S', 'W'];
+  marks.forEach((m, i) => {
+    const mx = stripX + stripW * (0.14 + i * 0.24);
+    ctx.fillText(m, mx, stripY + 18 * s);
+  });
+  ctx.fillStyle = '#ffd34d';
+  ctx.fillRect(w * 0.5 - 1.5 * s, stripY, 3 * s, 7 * s);
+  // Switch row along the bottom of the panel.
+  for (let i = 0; i < 12; i++) {
+    const sx = w * 0.10 + i * w * 0.072;
+    const sy = h * 0.945;
+    ctx.fillStyle = '#0c0e12';
+    ctx.fillRect(sx, sy, 14 * s, 8 * s);
+    ctx.fillStyle = i % 3 === 0 ? '#ffd34d' : '#c8ccd4';
+    ctx.fillRect(sx + 3 * s, sy - 6 * s, 8 * s, 7 * s);
+  }
+  // Round knobs flanking the standby dials.
+  for (const kx of [w * 0.335, w * 0.665]) {
+    ctx.fillStyle = '#2b2e34';
+    ctx.beginPath(); ctx.arc(kx, h * 0.885, 11 * s, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+    ctx.lineWidth = 1.5 * s;
+    ctx.beginPath(); ctx.arc(kx, h * 0.885, 11 * s, 0, Math.PI * 2); ctx.stroke();
+    ctx.strokeStyle = '#ffd34d';
+    ctx.beginPath();
+    ctx.moveTo(kx, h * 0.885);
+    ctx.lineTo(kx + 7 * s, h * 0.885 - 7 * s);
+    ctx.stroke();
+  }
   ctx.fillStyle = 'rgba(255,211,77,0.25)';
   ctx.fillRect(w * 0.42, h * 0.78, w * 0.16, 3);
   ctx.restore();
