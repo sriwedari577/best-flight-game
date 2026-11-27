@@ -47,6 +47,12 @@ export function terrainHeight(x, z) {
   if (x > coast + 110) h = Math.max(h, 2.5);
   // Eastern mountain ridge.
   h += 330 * smoothstep(850, 1500, x) + 60 * smoothstep(700, 900, x) * (0.5 + 0.5 * Math.sin(z * 0.004));
+  // Northern headland: a high rust plateau beyond the ring course,
+  // falling to sea cliffs on the west coast. Real terrain, flown
+  // to in play; the ring course ends at its foot.
+  const headZ = smoothstep(1050, 1400, -z);
+  const headX = smoothstep(-750, -550, x) * smoothstep(750, 550, x);
+  h += 185 * headZ * headX;
   // Two sea islands, clear of the beach.
   h += bump(x, z, -1080, 620, 300, 46);
   h += bump(x, z, -1350, -640, 260, 38);
@@ -96,14 +102,19 @@ export function terrainColor(x, z) {
   if (type === 'apron') return '#7d8a7a';
   if (type === 'town') return '#b9a888';
   if (type === 'rock') {
-    const r = Math.round(123 + 15 * n);
-    const g = Math.round(118 + 15 * n);
-    const b = Math.round(110 + 16 * n);
+    // Ember Mesa: sun-baked rust rock, unmistakably different
+    // from the green coastal plain at contact-sheet scale.
+    const r = Math.round(150 + 14 * n);
+    const g = Math.round(88 + 12 * n);
+    const b = Math.round(64 + 10 * n);
     return `rgb(${r},${g},${b})`;
   }
   if (type === 'highland') {
-    const g = Math.round(125 + 10 * n);
-    return `rgb(${104 + Math.round(8 * n)},${g},${82 + Math.round(6 * n)})`;
+    // Mesa apron: dry amber grass between plain and rock.
+    const r = Math.round(166 + 12 * n);
+    const g = Math.round(130 + 12 * n);
+    const b = Math.round(80 + 8 * n);
+    return `rgb(${r},${g},${b})`;
   }
   if (type === 'dune') return '#cbb98a';
   const g = 96 + Math.round(14 * n) + Math.min(20, Math.max(0, h * 0.25));

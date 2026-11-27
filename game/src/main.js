@@ -50,9 +50,9 @@ if (staged) {
   missionState = makeMissionState(game.missionId);
   // Re-apply ring progress for the rings shot after the fresh state.
   if (params.get('shot') === 'rings') {
-    missionState.index = 1;
-    missionState.ringsHit = 1;
-    missionState.score = 250;
+    missionState.index = 4;
+    missionState.ringsHit = 4;
+    missionState.score = 1000;
   }
   // Re-apply dash progress for the dash shot after the fresh state.
   if (params.get('shot') === 'dash') {

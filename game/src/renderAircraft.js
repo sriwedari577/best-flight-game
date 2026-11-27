@@ -112,11 +112,12 @@ export function drawCockpitFrame(ctx, w, h, plane, time) {
   ctx.fillStyle = '#c23b2e';
   ctx.fillRect(nx - 38 * s, ny + 56 * s, 76 * s, 5 * s);
   // Propeller disc, centred on the nose tip: a wide, visible disc
-  // with two blurred blades and a spinner hub.
-  const propR = 62 * s * (0.45 + plane.throttle * 0.55);
+  // with two blurred blades and a spinner hub. Kept compact so
+  // the runway centreline ahead stays clear of the blur.
+  const propR = 54 * s * (0.45 + plane.throttle * 0.55);
   ctx.fillStyle = 'rgba(58,58,66,0.46)';
   ctx.beginPath();
-  ctx.ellipse(nx, ny - 72 * s, propR, propR * 0.45, 0, 0, Math.PI * 2);
+  ctx.ellipse(nx, ny - 72 * s, propR, propR * 0.42, 0, 0, Math.PI * 2);
   ctx.fill();
   ctx.strokeStyle = 'rgba(30,30,36,0.6)';
   ctx.lineWidth = 4 * s;
@@ -124,8 +125,8 @@ export function drawCockpitFrame(ctx, w, h, plane, time) {
   for (const off of [0, Math.PI / 2]) {
     const aa = a + off;
     ctx.beginPath();
-    ctx.moveTo(nx - Math.cos(aa) * propR, ny - 72 * s - Math.sin(aa) * propR * 0.45);
-    ctx.lineTo(nx + Math.cos(aa) * propR, ny - 72 * s + Math.sin(aa) * propR * 0.45);
+    ctx.moveTo(nx - Math.cos(aa) * propR, ny - 72 * s - Math.sin(aa) * propR * 0.42);
+    ctx.lineTo(nx + Math.cos(aa) * propR, ny - 72 * s + Math.sin(aa) * propR * 0.42);
     ctx.stroke();
   }
   ctx.fillStyle = '#1d3a52';

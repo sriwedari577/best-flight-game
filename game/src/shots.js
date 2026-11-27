@@ -17,9 +17,10 @@ export function applyShotStaging(params, plane, missionState, game) {
   } else if (shot === 'cockpit') {
     game.view = 'cockpit';
     game.missionId = 'landing';
-    // Offset left of the centreline so the runway stripes stay
-    // visible beside the nose instead of hiding behind the prop disc.
-    placePlane(plane, -34, 58, 520, 0.02, 52, 0.58);
+    // Offset further left of the centreline so the runway stripes
+    // AND the centreline dashes stay clear of the nose and the
+    // prop disc instead of hiding behind them.
+    placePlane(plane, -52, 58, 520, 0.02, 52, 0.58);
     plane.pitch = -0.03;
   } else if (shot === 'dash') {
     game.view = 'chase';
@@ -32,17 +33,25 @@ export function applyShotStaging(params, plane, missionState, game) {
     // Low and fast on the checkpoint course: behind gate 1, heading
     // along the coast toward gate 2, fuel staged low so the amber
     // bar and the TIME countdown carry the pressure.
-    placePlane(plane, -418, 50, 947, 0.32, 78, 0.85);
+    placePlane(plane, -418, 50, 947, 0.32, 100, 1.0);
     plane.fuel = 18;
+    // Battle damage, staged from the overspeed mechanic itself:
+    // full throttle holds speed over the limit, so the OVERSPEED
+    // warning stays lit and the AIRFRAME bar reads the damage the
+    // airframe has already taken. Smoke shows in chase view.
+    plane.damage = 66;
     plane.pitch = 0;
   } else if (shot === 'rings') {
     game.view = 'chase';
     game.missionId = 'rings';
     missionState.id = 'rings';
-    missionState.index = 1;
-    missionState.ringsHit = 1;
-    missionState.score = 250;
-    placePlane(plane, -110, 96, 420, 0.42, 58, 0.62);
+    missionState.index = 4;
+    missionState.ringsHit = 4;
+    missionState.score = 1000;
+    // North toward the headland: ring 5 ahead over the plain, the
+    // rust plateau rising beyond it — same mission, second biome,
+    // ring framed against the cliffs.
+    placePlane(plane, 100, 150, -400, -0.09, 58, 0.62);
     plane.pitch = 0;
   } else if (shot === 'landing') {
     game.view = 'chase';
