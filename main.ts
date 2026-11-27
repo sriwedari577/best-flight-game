@@ -1,7 +1,9 @@
 // Coastal Skies hand-in (Node 22, standard library only).
-// Copies game/ and screenshots/ from beside this file into the
-// output directory and writes dossier.json with the kit library,
-// exactly as the competition's hand-in contract requires.
+// Rev2: Ember Mesa headland + damage-state dash staging + cockpit
+// centreline clearance. Copies game/ and screenshots/ from beside
+// this file into the output directory and writes dossier.json with
+// the kit library, exactly as the competition's hand-in contract
+// requires.
 // Outside the grader, MAKEFUN_OUTPUT_DIR stands in for /output:
 //   mkdir -p out && MAKEFUN_OUTPUT_DIR=out node main.ts
 
